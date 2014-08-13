@@ -47,6 +47,7 @@ background-color:#b0e0e6;
  </rich:tabPanel>
  <h:commandButton action="#{sudokuController.action}" value="solve"></h:commandButton>
  <h:commandButton action="#{sudokuController.loadDemoSudoku}" value="loadDemoSudoku"></h:commandButton>
+ <h:commandButton action="#{sudokuController.loadWebSudoku}" value="loadWebSudoku"></h:commandButton>
  <h:commandButton action="#{sudokuController.reset}" value="reset"></h:commandButton>
 </h:form>
 </f:view>

@@ -1,6 +1,9 @@
 package main.java.ui.controller;
+import java.io.IOException;
+
 import main.java.beans.Sudoku;
 import main.java.server.BrainIF;
+import main.java.server.parser.Parser;
 
 
 public class SudokuController {
@@ -29,6 +32,11 @@ public class SudokuController {
 
 	public String loadDemoSudoku(){
 		sudoku = brain.loadDemoSudoku(sudoku);
+		return null;
+	}
+	
+	public String loadWebSudoku() throws IOException{
+		sudoku = Parser.parseWebSudoku();
 		return null;
 	}
 
