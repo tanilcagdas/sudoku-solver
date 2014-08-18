@@ -20,6 +20,7 @@ public class NotSolvedWriter {
 
 	public static void log(Sudoku sudoku, Sudoku unfinishedSolution)
 			throws IOException {
+		if(sudoku.getHowManyCellsLeft()!=81){
 		StringBuffer sb = new StringBuffer();
 		sb.append("Date : ");
 		sb.append(new Date().toString());
@@ -37,6 +38,9 @@ public class NotSolvedWriter {
 				new FileOutputStream(outputFile), "UTF8"));
 		writer.write(sb.toString());
 		writer.close();
+		}else{
+			System.out.println("This is an empty sudoku aint writing");
+		}		
 	}
 
 	public static Sudoku readANonSolvedSudoku() throws FileNotFoundException {
