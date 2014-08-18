@@ -8,7 +8,7 @@
 	<managed-bean>
 		<managed-bean-name>sudokuController</managed-bean-name>
 		<managed-bean-class>main.java.ui.controller.SudokuController</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	
 

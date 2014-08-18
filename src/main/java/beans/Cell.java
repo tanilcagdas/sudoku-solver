@@ -17,13 +17,20 @@ public class Cell {
 	public void setValue(int value) {
 		this.value = value;
 		setGuesses(null);
-		setFound(true);
+		setFound((value==0)?false:true);
+//		setFound(true);
 	}
 	public boolean isFound() {
 		return found;
 	}
 	public void setFound(boolean found) {
-		this.found = found;
+		if(getValue()==0 && found == false){
+			this.found = found;
+		}else if(getValue()!=0 && found == true){
+			this.found = found;
+		}else{
+			System.out.println("trying to set cell found to "+found+" but value is "+getValue());
+		}
 	}
 	public ArrayList<Integer> getGuesses() {
 		return guesses;
@@ -46,6 +53,18 @@ public class Cell {
 	}
 	public void copy(Cell cell) throws CloneNotSupportedException{
 		this.clone();
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Cell value = ");
+		sb.append(value).append(" ");
+		sb.append("Cell color = ");
+		sb.append(color).append(" ");
+		sb.append("Cell guesses = ");
+		sb.append(guesses).append(" ");
+		return sb.toString();
 	}
 
 }

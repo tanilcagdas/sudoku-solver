@@ -16,7 +16,6 @@
 <center>
 
 			  
-			
 			<rich:dataTable  id="row" value="#{sudokuController.sudokuSolution.rowArray}" var="row"  >  
               <f:facet name="header">
 				<rich:columnGroup>
@@ -128,7 +127,12 @@
                 </h:column>
                 
             </rich:dataTable> 
-			
+			<h:outputText value="how many sells left : "></h:outputText>
+			<h:outputText value="#{sudokuController.sudokuSolution.howManyCellsLeft}"></h:outputText>
+			<h:outputText value=" sudoku solved :"></h:outputText>
+			<h:outputText value="#{sudokuController.sudokuSolution.solved}"></h:outputText>
+			<h:outputText value=" is Sudoku correct : "></h:outputText>
+			<h:outputText value="#{sudokuController.sudokuCorrect}"></h:outputText>
 </center>
 
 

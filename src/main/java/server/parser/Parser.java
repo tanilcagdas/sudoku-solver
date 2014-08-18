@@ -34,9 +34,10 @@ public class Parser {
 						cell.setValue(0);
 					}
 					
-					System.out.println("cell : "+i+j+" value : "+value);
+//					System.out.println("cell : "+i+j+" value : "+value);
 			}
 		}
+		System.out.println("Loaded web sudoku");
 	
 		return inputSudoku;
 		

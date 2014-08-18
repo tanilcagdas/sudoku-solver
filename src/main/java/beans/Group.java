@@ -25,5 +25,15 @@ public abstract class Group {
 		this.group = group;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		for (Cell cell : group) {
+			sb.append("\n");
+			sb.append(cell);
+		}
+		return sb.toString();
+	}
+	
 	
 }

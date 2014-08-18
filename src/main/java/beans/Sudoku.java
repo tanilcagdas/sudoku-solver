@@ -1,6 +1,9 @@
 package main.java.beans;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import main.java.server.parser.Parser;
 
 public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	
@@ -18,12 +21,7 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 		
 			syncCollumnsToRow();
 			syncThreeByThreeSquaresToRow();
-
-	
-	/*	for(int i=0;i<9;i++){
-			//row arrayden al
-			threeByThreeArray.add( new ThreeByThreeSquare()); 
-		}*/
+			System.out.println("created new sudoku");
 
 	}
 
@@ -80,13 +78,13 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 				
 					if(collumnArray.size()<collumn+1){
 						collumnArray.add( new Collumn());
-						System.out.println("created collumn for row : "+ row +", collumn: "+ collumn );
+//						System.out.println("created collumn for row : "+ row +", collumn: "+ collumn );
 					}
 					Cell rightCell=rowArray.get(row).getGroup().get(collumn);	
 					collumnArray.get(collumn).getGroup().set(row, rightCell);
 					Cell leftCell=collumnArray.get(collumn).getGroup().get(row);
 					
-					System.out.println(leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
+//					System.out.println(leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
 			}
 		}
 	}
@@ -121,14 +119,14 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 					//alt taraf ok 
 					if(threeByThreeArray.size()<group+1){
 						threeByThreeArray.add( new ThreeByThreeSquare());
-						System.out.println("created ThreeByThreeSquare for group: "+group +", row : "+ row +", collumn: "+ collumn );
+//						System.out.println("created ThreeByThreeSquare for group: "+group +", row : "+ row +", collumn: "+ collumn );
 					}
 					//alt taraf ok
 					Cell rightCell=rowArray.get(row).getGroup().get(collumn);	
 					threeByThreeArray.get(group).getGroup().set(groupCount, rightCell);
 					Cell leftCell=threeByThreeArray.get(group).getGroup().get(groupCount);
 					
-					System.out.println("For threebythree "+leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
+//					System.out.println("For threebythree "+leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
 			}
 		}
 		
@@ -181,6 +179,31 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	public int compareTo(Sudoku o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		Sudoku testSudoku = Parser.parseWebSudoku();
+		System.out.println(testSudoku.toString());
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				Cell cell = getRowArray().get(i).getGroup().get(j);
+				sb.append("Cell ").append(i).append(j).append(" : ");
+				sb.append(cell.getValue()).append(" ");
+				if (!cell.getColor().equals("black")) {
+					sb.append("Guesses : ");
+					sb.append(cell.getGuesses()).append(" ");
+					sb.append("Color :  ");
+					sb.append(cell.getColor()).append(" ");
+				}
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
 	}
 
 

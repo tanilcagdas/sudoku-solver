@@ -45,10 +45,15 @@ background-color:#b0e0e6;
  </f:subview>
  </rich:tab>
  </rich:tabPanel>
- <h:commandButton action="#{sudokuController.action}" value="solve"></h:commandButton>
- <h:commandButton action="#{sudokuController.loadDemoSudoku}" value="loadDemoSudoku"></h:commandButton>
  <h:commandButton action="#{sudokuController.loadWebSudoku}" value="loadWebSudoku"></h:commandButton>
+ <h:commandButton action="#{sudokuController.action}" value="solve"></h:commandButton>
+ </br>
+ <h:commandButton action="#{sudokuController.loadDemoSudoku}" value="loadDemoSudoku"></h:commandButton>
+ <h:commandButton action="#{sudokuController.loadUnSolvedSudoku}" value="loadUnSolvedSudoku"></h:commandButton>
  <h:commandButton action="#{sudokuController.reset}" value="reset"></h:commandButton>
+ </br>
+ <h:commandButton action="#{sudokuController.solveStepByStep1}" value="solve Alg 1"></h:commandButton>
+ <h:commandButton action="#{sudokuController.solveStepByStep2}" value="solve Alg 2"></h:commandButton>
 </h:form>
 </f:view>
 </body>
