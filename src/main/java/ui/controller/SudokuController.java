@@ -19,6 +19,11 @@ public class SudokuController {
 	
 	private boolean sudokuCorrect;
 	
+	private int selectedSudokuId;
+	private int selectedSudokuLevel;
+	
+	
+	
 	public SudokuController() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
 		brain = (BrainIF) BrainIF.class.forName(className).newInstance();
 		reset();
@@ -72,7 +77,13 @@ public class SudokuController {
 	
 	public String loadWebSudoku() throws IOException{
 		reset();
-		sudoku = Parser.parseWebSudoku();
+		sudoku = Parser.parseWebSudoku(0,0);
+		return null;
+	}
+
+	public String loadCustomWebSudoku() throws IOException{
+		reset();
+		sudoku = Parser.parseWebSudoku(getSelectedSudokuId(),getSelectedSudokuLevel());
 		return null;
 	}
 
@@ -109,6 +120,22 @@ public class SudokuController {
 	}
 	public static void setSudokuSolution(Sudoku sudokuSolution) {
 		SudokuController.sudokuSolution = sudokuSolution;
+	}
+
+	public int getSelectedSudokuId() {
+		return selectedSudokuId;
+	}
+
+	public void setSelectedSudokuId(int selectedSudokuId) {
+		this.selectedSudokuId = selectedSudokuId;
+	}
+
+	public int getSelectedSudokuLevel() {
+		return selectedSudokuLevel;
+	}
+
+	public void setSelectedSudokuLevel(int selectedSudokuLevel) {
+		this.selectedSudokuLevel = selectedSudokuLevel;
 	} 
 
 }

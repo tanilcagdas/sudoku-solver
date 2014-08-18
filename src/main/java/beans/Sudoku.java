@@ -12,6 +12,8 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	ArrayList<ThreeByThreeSquare> threeByThreeArray= new ArrayList<ThreeByThreeSquare>();
 	boolean solved=false;
 	int HowManyCellsLeft=81;
+	int puzzleId;
+	int puzzleLevel;
 	
 	public Sudoku(){
 		
@@ -66,6 +68,28 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 
 	public void setHowManyCellsLeft(int howManyCellsLeft) {
 		HowManyCellsLeft = howManyCellsLeft;
+	}
+
+
+	public int getPuzzleId() {
+		return puzzleId;
+	}
+
+
+	public void setPuzzleId(int puzzleId) {
+		this.puzzleId = puzzleId;
+	}
+
+
+
+
+	public int getPuzzleLevel() {
+		return puzzleLevel;
+	}
+
+
+	public void setPuzzleLevel(int puzzleLevel) {
+		this.puzzleLevel = puzzleLevel;
 	}
 
 

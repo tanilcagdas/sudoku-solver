@@ -35,6 +35,9 @@ background-color:#b0e0e6;
 <div class="sudoku_jsp"  >
  <jsp:include page="sudoku.jsp"></jsp:include>
  </div>
+ <h:outputText value="Puzzle id : "></h:outputText>
+ <h:outputText value="#{sudokuController.demoSudoku.puzzleId}"></h:outputText>
+ <h:outputText value="#{sudokuController.demoSudoku.puzzleLevel}"></h:outputText>
  </f:subview>
  </rich:tab>
          <rich:tab label="SudokuSolution" name="sudokuSolution">
@@ -45,6 +48,9 @@ background-color:#b0e0e6;
  </f:subview>
  </rich:tab>
  </rich:tabPanel>
+ <h:inputText value="#{sudokuController.selectedSudokuId}" ></h:inputText>
+ <h:inputText value="#{sudokuController.selectedSudokuLevel}" ></h:inputText>
+ <h:commandButton action="#{sudokuController.loadCustomWebSudoku}" value="loadCustomWebSudoku"></h:commandButton>
  <h:commandButton action="#{sudokuController.loadWebSudoku}" value="loadWebSudoku"></h:commandButton>
  <h:commandButton action="#{sudokuController.action}" value="solve"></h:commandButton>
  </br>
