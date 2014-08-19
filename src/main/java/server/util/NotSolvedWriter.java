@@ -20,10 +20,16 @@ public class NotSolvedWriter {
 
 	public static void log(Sudoku sudoku, Sudoku unfinishedSolution)
 			throws IOException {
-		if(sudoku.getHowManyCellsLeft()!=81){
+		if(unfinishedSolution.getHowManyCellsLeft()!=81){
 		StringBuffer sb = new StringBuffer();
 		sb.append("Date : ");
 		sb.append(new Date().toString());
+		sb.append("\n");
+		sb.append("Sudoku id : ");
+		sb.append(sudoku.getPuzzleId());
+		sb.append("\n");
+		sb.append("Level : ");
+		sb.append(sudoku.getPuzzleLevel());
 		sb.append("\n");
 		sb.append("_____________Sudoku__________________");
 		sb.append("\n");
@@ -33,7 +39,7 @@ public class NotSolvedWriter {
 		sb.append(unfinishedSolution.toString());
 
 		String outputFile = "sudokusolver/unSolvedSudoku_"
-				+ new Date().getTime();
+				+ sudoku.getPuzzleId()+"_"+sudoku.getPuzzleLevel();
 		Writer writer = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(outputFile), "UTF8"));
 		writer.write(sb.toString());
@@ -55,7 +61,7 @@ public class NotSolvedWriter {
 					new FileInputStream(inputFile));
 			String str = "";
 			try {
-				for (int i = 0; i < 1130; i++) {
+				for (int i = 0; i < 1300; i++) {
 					char c = (char) reader.read();
 					str = str + c;
 				}

@@ -54,12 +54,14 @@ public class Parser {
 		return inputSudoku;
 	}
 
-	public static Sudoku parseWebSudoku(int selectedSudokuId,int selectedSudokuLevel) throws IOException {
+	public static Sudoku parseWebSudoku(long selectedSudokuId,int selectedSudokuLevel) throws IOException {
 
 		Sudoku inputSudoku = new Sudoku();
 		Document doc;
-		if(selectedSudokuId == 0){
-			doc = Jsoup.connect("http://show.websudoku.com/?level=1&set_id=" + selectedSudokuId).get();
+		if(selectedSudokuId != 0){
+			doc = Jsoup.connect("http://show.websudoku.com/?level="+selectedSudokuLevel+"&set_id=" + selectedSudokuId).get();
+		}else if(selectedSudokuLevel != 0){
+			doc = Jsoup.connect("http://show.websudoku.com/?level="+selectedSudokuLevel).get();
 		}else {
 			doc = Jsoup.connect("http://show.websudoku.com/").get();
 		}
@@ -90,13 +92,13 @@ public class Parser {
 			}
 		}
 		try {
-			int puzzleIdInt = Integer.parseInt(puzzleId.trim());
+			long puzzleIdInt = Long.parseLong(puzzleId.trim());
 			inputSudoku.setPuzzleId(puzzleIdInt);
 			int puzzleLevelInt = Integer.parseInt(puzzleLevelStr.trim());
 			inputSudoku.setPuzzleLevel(puzzleLevelInt);
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return inputSudoku;
 	}

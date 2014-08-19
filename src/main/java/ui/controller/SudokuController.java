@@ -19,7 +19,7 @@ public class SudokuController {
 	
 	private boolean sudokuCorrect;
 	
-	private int selectedSudokuId;
+	private long selectedSudokuId;
 	private int selectedSudokuLevel;
 	
 	
@@ -77,7 +77,7 @@ public class SudokuController {
 	
 	public String loadWebSudoku() throws IOException{
 		reset();
-		sudoku = Parser.parseWebSudoku(0,0);
+		sudoku = Parser.parseWebSudoku(0,selectedSudokuLevel);
 		return null;
 	}
 
@@ -122,11 +122,11 @@ public class SudokuController {
 		SudokuController.sudokuSolution = sudokuSolution;
 	}
 
-	public int getSelectedSudokuId() {
+	public long getSelectedSudokuId() {
 		return selectedSudokuId;
 	}
 
-	public void setSelectedSudokuId(int selectedSudokuId) {
+	public void setSelectedSudokuId(long selectedSudokuId) {
 		this.selectedSudokuId = selectedSudokuId;
 	}
 

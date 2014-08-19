@@ -12,7 +12,7 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	ArrayList<ThreeByThreeSquare> threeByThreeArray= new ArrayList<ThreeByThreeSquare>();
 	boolean solved=false;
 	int HowManyCellsLeft=81;
-	int puzzleId;
+	long puzzleId;
 	int puzzleLevel;
 	
 	public Sudoku(){
@@ -71,12 +71,12 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	}
 
 
-	public int getPuzzleId() {
+	public long getPuzzleId() {
 		return puzzleId;
 	}
 
 
-	public void setPuzzleId(int puzzleId) {
+	public void setPuzzleId(long puzzleId) {
 		this.puzzleId = puzzleId;
 	}
 

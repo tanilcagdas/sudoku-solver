@@ -37,6 +37,8 @@ background-color:#b0e0e6;
  </div>
  <h:outputText value="Puzzle id : "></h:outputText>
  <h:outputText value="#{sudokuController.demoSudoku.puzzleId}"></h:outputText>
+ </br>
+ <h:outputText value="Puzzle lvl : "></h:outputText>
  <h:outputText value="#{sudokuController.demoSudoku.puzzleLevel}"></h:outputText>
  </f:subview>
  </rich:tab>
