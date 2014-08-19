@@ -2,8 +2,8 @@ package main.java.beans;
 
 public class Row extends Group {
 
-	public Row() {
-		// TODO Auto-generated constructor stub
+	public Row(Sudoku sudoku,int index) {
+		super(sudoku, index);
 	}
 	
 	@Override

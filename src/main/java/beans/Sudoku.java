@@ -8,7 +8,7 @@ import main.java.server.parser.Parser;
 public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	
 	ArrayList<Row> rowArray= new ArrayList<Row>();
-	ArrayList<Collumn> collumnArray= new ArrayList<Collumn>();
+	ArrayList<Column> columnArray= new ArrayList<Column>();
 	ArrayList<ThreeByThreeSquare> threeByThreeArray= new ArrayList<ThreeByThreeSquare>();
 	boolean solved=false;
 	int HowManyCellsLeft=81;
@@ -18,10 +18,10 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	public Sudoku(){
 		
 			for(int i=0;i<9;i++){
-				rowArray.add( new Row()); 
+				rowArray.add( new Row(this,i)); 
 			}	
 		
-			syncCollumnsToRow();
+			syncColumnsToRow();
 			syncThreeByThreeSquaresToRow();
 			System.out.println("created new sudoku");
 
@@ -38,11 +38,11 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	public void setRowArray(ArrayList<Row> rowArray) {
 		this.rowArray = rowArray;
 	}
-	public ArrayList<Collumn> getCollumnArray() {
-		return collumnArray;
+	public ArrayList<Column> getColumnArray() {
+		return columnArray;
 	}
-	public void setCollumnArray(ArrayList<Collumn> collumnArray) {
-		this.collumnArray = collumnArray;
+	public void setColumnArray(ArrayList<Column> columnArray) {
+		this.columnArray = columnArray;
 	}
 	public ArrayList<ThreeByThreeSquare> getThreeByThreeArray() {
 		return threeByThreeArray;
@@ -93,20 +93,21 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	}
 
 
-	private void syncCollumnsToRow(){
-		collumnArray.clear();
-		for(int row=0;row<9;row++)
+	private void syncColumnsToRow(){
+		columnArray.clear();
+		for(int rowIndex=0;rowIndex<9;rowIndex++)
 		{
-			for(int collumn=0;collumn<9;collumn++)
+			for(int columnIndex=0;columnIndex<9;columnIndex++)
 			{
 				
-					if(collumnArray.size()<collumn+1){
-						collumnArray.add( new Collumn());
+					if(columnArray.size()<columnIndex+1){
+						columnArray.add( new Column(this,columnIndex));
 //						System.out.println("created collumn for row : "+ row +", collumn: "+ collumn );
 					}
-					Cell rightCell=rowArray.get(row).getGroup().get(collumn);	
-					collumnArray.get(collumn).getGroup().set(row, rightCell);
-					Cell leftCell=collumnArray.get(collumn).getGroup().get(row);
+					Cell cell=rowArray.get(rowIndex).getGroup().get(columnIndex);	
+					columnArray.get(columnIndex).getGroup().set(rowIndex, cell);
+					cell.setColumn(columnArray.get(columnIndex));
+//					Cell leftCell=collumnArray.get(collumn).getGroup().get(row);
 					
 //					System.out.println(leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
 			}
@@ -131,24 +132,25 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 		
 	}
 	
-	private void syncThreeByThreeSquaresToRowHelper(int rowStart,int rowEnd, int collumnStart, int collumnEnd){
-		int group=0;
+	private void syncThreeByThreeSquaresToRowHelper(int rowStart,int rowEnd, int columnStart, int columnEnd){
+		int threeByThreeIndex=0;
 		int groupCount=0;
-		for(int row=rowStart;row<rowEnd;row++)
+		for(int rowIndex=rowStart;rowIndex<rowEnd;rowIndex++)
 		{
 			
-			for(int collumn=collumnStart;collumn<collumnEnd;collumn++,groupCount++)
+			for(int columnIndex=columnStart;columnIndex<columnEnd;columnIndex++,groupCount++)
 			{
-				group=calculateGroup(row, collumn);
+				threeByThreeIndex=calculateGroup(rowIndex, columnIndex);
 					//alt taraf ok 
-					if(threeByThreeArray.size()<group+1){
-						threeByThreeArray.add( new ThreeByThreeSquare());
+					if(threeByThreeArray.size()<threeByThreeIndex+1){
+						threeByThreeArray.add( new ThreeByThreeSquare(this,threeByThreeIndex));
 //						System.out.println("created ThreeByThreeSquare for group: "+group +", row : "+ row +", collumn: "+ collumn );
 					}
 					//alt taraf ok
-					Cell rightCell=rowArray.get(row).getGroup().get(collumn);	
-					threeByThreeArray.get(group).getGroup().set(groupCount, rightCell);
-					Cell leftCell=threeByThreeArray.get(group).getGroup().get(groupCount);
+					Cell cell=rowArray.get(rowIndex).getGroup().get(columnIndex);	
+					threeByThreeArray.get(threeByThreeIndex).getGroup().set(groupCount, cell);
+					cell.setColumn(threeByThreeArray.get(threeByThreeIndex));
+//					Cell leftCell=threeByThreeArray.get(group).getGroup().get(groupCount);
 					
 //					System.out.println("For threebythree "+leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
 			}
@@ -156,17 +158,17 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 		
 	}
 	
-	private int calculateGroup(int row,int collumn){
+	private int calculateGroup(int row,int column){
 		int group=0;
-		if (row<3&&collumn<3)group=0;
-		else if (row<3&&collumn<6) group=1;
-		else if (row<3&&collumn<9) group=2;
-		else if (row<6&&collumn<3) group=3;
-		else if (row<6&&collumn<6) group=4;
-		else if (row<6&&collumn<9) group=5;
-		else if (row<9&&collumn<3) group=6;
-		else if (row<9&&collumn<6) group=7;
-		else if (row<9&&collumn<9) group=8;
+		if (row<3&&column<3)group=0;
+		else if (row<3&&column<6) group=1;
+		else if (row<3&&column<9) group=2;
+		else if (row<6&&column<3) group=3;
+		else if (row<6&&column<6) group=4;
+		else if (row<6&&column<9) group=5;
+		else if (row<9&&column<3) group=6;
+		else if (row<9&&column<6) group=7;
+		else if (row<9&&column<9) group=8;
 		
 		return group;
 	}

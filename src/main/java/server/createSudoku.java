@@ -4,8 +4,8 @@ import main.java.beans.Sudoku;
 
 public class createSudoku {
 
-	public Sudoku changeValue(Sudoku sudoku,int row,int collumn,int value){
-		sudoku.getRowArray().get(row).getGroup().get(collumn).setValue(value);
+	public Sudoku changeValue(Sudoku sudoku,int row,int column,int value){
+		sudoku.getRowArray().get(row).getGroup().get(column).setValue(value);
 	return sudoku;
 }
 	

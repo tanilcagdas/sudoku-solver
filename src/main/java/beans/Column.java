@@ -1,9 +1,9 @@
 package main.java.beans;
 
-public class Collumn extends Group {
+public class Column extends Group {
 
-	public Collumn() {
-		// TODO Auto-generated constructor stub
+	public Column(Sudoku sudoku,int index) {
+		super(sudoku, index);
 	}
 	
 	@Override

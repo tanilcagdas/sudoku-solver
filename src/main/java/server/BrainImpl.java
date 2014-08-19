@@ -168,9 +168,9 @@ public class BrainImpl implements BrainIF {
 	public Sudoku loadDemoSudoku(Sudoku demoSudoku) {
 		// TODO set all zeros
 		for (int row = 0; row < demoSudoku.getRowArray().size(); row++) {
-			for (int collumn = 0; collumn < demoSudoku.getRowArray().get(row)
-					.getGroup().size(); collumn++)
-				demoSudoku.getRowArray().get(row).getGroup().get(collumn)
+			for (int column = 0; column < demoSudoku.getRowArray().get(row)
+					.getGroup().size(); column++)
+				demoSudoku.getRowArray().get(row).getGroup().get(column)
 						.setValue(0);
 		}
 		// TODO put known values
@@ -189,9 +189,9 @@ public class BrainImpl implements BrainIF {
 		if (range.equalsIgnoreCase(ALL)) {
 			method = getClass().getDeclaredMethod(methodName, Cell.class);
 			for (int row = 0; row < 9; row++) {
-				for (int collumn = 0; collumn < 9; collumn++) {
+				for (int columnIndex = 0; columnIndex < 9; columnIndex++) {
 					Cell cell = sudoku.getRowArray().get(row).getGroup()
-							.get(collumn);
+							.get(columnIndex);
 					method.invoke(this, cell);
 				}
 			}
@@ -208,7 +208,7 @@ public class BrainImpl implements BrainIF {
 				if (range.equalsIgnoreCase(ROW)) {
 					group = sudoku.getRowArray().get(i);
 				} else if (range.equalsIgnoreCase(COLUMN)) {
-					group = sudoku.getCollumnArray().get(i);
+					group = sudoku.getColumnArray().get(i);
 				} else if (range.equalsIgnoreCase("3x3")) {
 					group = sudoku.getThreeByThreeArray().get(i);
 				}
