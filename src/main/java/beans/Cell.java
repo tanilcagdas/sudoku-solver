@@ -1,9 +1,13 @@
 package main.java.beans;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Cell {
+public class Cell extends Observable implements Observer {
 
+	private static final String RED = "red";
+	private static final String BLUE = "blue";
 	private Group row;
 	private Group column;
 	private Group threeByThreeSquare;
@@ -11,6 +15,15 @@ public class Cell {
 	private boolean found;
 	private ArrayList<Integer> guesses;
 	private String color = "black";
+
+	private static ArrayList<Integer> DEFAULT_GUESSES = new ArrayList<Integer>();
+	{
+		if (DEFAULT_GUESSES.size() == 0) {
+			for (int i = 1; i < 10; i++)
+				DEFAULT_GUESSES.add(i);
+
+		}
+	}
 
 	public Cell(Group group) {
 		if (group instanceof Row) {
@@ -20,6 +33,21 @@ public class Cell {
 		} else if (group instanceof ThreeByThreeSquare) {
 			this.setThreeByThreeSquare(group);
 		}
+		// add guesses
+		setGuesses((ArrayList<Integer>) DEFAULT_GUESSES.clone());
+	}
+
+	public void registerObservers() {
+		for (Cell cell : getRow().getGroup()) {
+			this.addObserver(cell);
+		}
+		for (Cell cell : getColumn().getGroup()) {
+			this.addObserver(cell);
+		}
+		for (Cell cell : getThreeByThreeSquare().getGroup()) {
+			this.addObserver(cell);
+		}
+
 	}
 
 	public int getValue() {
@@ -27,9 +55,20 @@ public class Cell {
 	}
 
 	public void setValue(int value) {
+		if (this.value == value) {
+			return;
+		}
 		this.value = value;
 		setGuesses(null);
 		setFound((value == 0) ? false : true);
+		setChanged();
+		getRow().getSudoku().setHowManyCellsLeft(
+				getRow().getSudoku().getHowManyCellsLeft() - 1);
+		System.out.println("Cell with coordinates : " + getRow().getIndex()
+				+ "," + getColumn().getIndex() + " value set by "
+				+ Thread.currentThread().getStackTrace()[2].toString()
+				+ "\n to : " + value);
+		notifyObservers(this);
 	}
 
 	public boolean isFound() {
@@ -108,6 +147,73 @@ public class Cell {
 		sb.append("Cell guesses = ");
 		sb.append(guesses).append(" ");
 		return sb.toString();
+	}
+
+	public void update(Observable o, Object arg) {
+		if (arg instanceof Cell) {
+			Cell cell = (Cell) arg;
+			if (cell == this) {
+				return;
+			}
+			if (cell.found) {
+				int foundValue = cell.getValue();
+				clearGuess(foundValue);
+				// put all the logic here
+				// method1
+				if (getGuesses() != null && getGuesses().size() == 1) {
+//					setValue(getGuesses().get(0));
+//					setColor(RED);
+				}
+				// method2
+//				if (getGuesses() != null) {
+//					for (Integer guess : getGuesses()) {
+//						if (markAsUniqueGuessAndDetermine(guess, row)
+//								&& markAsUniqueGuessAndDetermine(guess, column)
+//								&& markAsUniqueGuessAndDetermine(guess,	threeByThreeSquare)) {
+//							setValue(guess);
+//							setColor(BLUE);
+//							getRow().getSudoku().setSudokuHasChanged(true);
+//							break;
+//						}
+//
+//					}
+//				}
+
+			}
+		}
+	}
+
+	private boolean markAsUniqueGuessAndDetermine(int number, Group group) {
+		for (int j = 0; j < 9; j++) {
+			Cell compareCell = group.getGroup().get(j);
+			if (compareCell == this) {
+				continue;
+			}
+			if (compareCell.getGuesses() != null) {
+				for (int compareGuess : compareCell.getGuesses()) {
+					if (compareGuess == number) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean clearGuess(int foundValue) {
+
+		// System.out.println(getGuesses().contains(foundValue));
+		for (int gssidx = 0; gssidx < 9; gssidx++) {
+			if (getGuesses() != null && getGuesses().size() > gssidx
+					&& getGuesses().get(gssidx) == foundValue) {
+				getGuesses().remove(gssidx);
+				if (getRow().getSudoku().isSudokuHasChanged() == false) {
+					getRow().getSudoku().setSudokuHasChanged(true);
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

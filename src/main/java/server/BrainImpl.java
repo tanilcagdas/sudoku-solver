@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import main.java.beans.Cell;
 import main.java.beans.Group;
@@ -11,6 +13,8 @@ import main.java.beans.Sudoku;
 import main.java.server.util.NotSolvedWriter;
 
 public class BrainImpl implements BrainIF {
+	
+	Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
 	private static final String RED = "red";
 	private static final String BLUE = "blue";
@@ -27,113 +31,76 @@ public class BrainImpl implements BrainIF {
 
 		}
 	}
-	private static boolean sudokuHasChanged;
-	private static int InternalHowManyCellsLeft;
 	private boolean sudokuCorrect;
 
 	public Sudoku solveSudoku(Sudoku sudoku) {
-		sudokuHasChanged = true;
 		Sudoku sudokuSolution = new Sudoku();
 		sudokuSolution = sudoku.copy();
+		sudokuSolution.setSudokuHasChanged(true);
 		try {
 			evaluateGuesses(sudokuSolution);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error Ocured", e);
 		}
-		// TODO count how many cells left
+		//  Solve the f.cking sudoku
 
-		try {
-			countHowManyCellsLeft(sudokuSolution);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// TODO Solve the f.cking sudoku
-
-		// TODO Check if the sudoku has changed
+		//  Check if the sudoku has changed
 		trial = 1;
-		while (sudokuHasChanged) {
-			while (sudokuHasChanged) {
+		while (sudokuSolution.isSudokuHasChanged()) {
+			while (sudokuSolution.isSudokuHasChanged()) {
 				solveSudokuByAlgorithm1(sudokuSolution);
-				sudokuSolution.setHowManyCellsLeft(InternalHowManyCellsLeft);
 			}
 			solveSudokuByAlgorithm2(sudokuSolution);
-			sudokuSolution.setHowManyCellsLeft(InternalHowManyCellsLeft);
 
 		}
 		if (!sudokuSolution.isSolved()) {
 			try {
 				NotSolvedWriter.log(sudoku, sudokuSolution);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error Ocured", e);
 			}
 		}
 		return sudokuSolution;
 	}
 
 	public Sudoku solveSudokuStepByStep(Sudoku sudokuSolution, int algorithm) {
-		sudokuHasChanged = true;
-		// Sudoku sudokuSolution = new Sudoku();
-		// sudokuSolution = sudoku.copy();
 		try {
 			evaluateGuesses(sudokuSolution);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error Ocured", e);
 		}
-		// TODO count how many cells left
 
-		try {
-			countHowManyCellsLeft(sudokuSolution);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// TODO Solve the f.cking sudoku
-
-		// TODO Check if the sudoku has changed
+		//  Check if the sudoku has changed
 		trial = 1;
 
-		// TODO reflection
+		//  reflection
 		String methodName = "solveSudokuByAlgorithm" + algorithm;
 		try {
 			Method method = getClass().getDeclaredMethod(methodName,
 					Sudoku.class);
 			// method.invoke(this, sudoku);
 			method.invoke(this, sudokuSolution);
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Error Ocured", e);
+		} 
 		return sudokuSolution;
 	}
 
 	public Sudoku solveSudokuByAlgorithm1(Sudoku sudokuSolution) {
-		sudokuHasChanged = false;
+		sudokuSolution.setSudokuHasChanged(false);
 		try {
 			clearGuessesInGroup(sudokuSolution);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error Ocured", e);
 		}
 		try {
 			determineCellsWhoHas1Guess(sudokuSolution);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error Ocured", e);
 		}
-		if (InternalHowManyCellsLeft == 0) {
+		if (sudokuSolution.getHowManyCellsLeft() == 0) {
 			sudokuSolution.setSolved(true);
-			sudokuHasChanged = false;
+			sudokuSolution.setSudokuHasChanged(false);
 			System.out.println("Sudoku is solved");
 			return sudokuSolution;
 		}
@@ -143,7 +110,7 @@ public class BrainImpl implements BrainIF {
 	}
 
 	public Sudoku solveSudokuByAlgorithm2(Sudoku sudokuSolution) {
-		if (InternalHowManyCellsLeft != 0)
+		if (sudokuSolution.getHowManyCellsLeft() != 0)
 			try {
 				determineWhoHasUniqueGuessInGroup(sudokuSolution);
 			} 
@@ -152,13 +119,13 @@ public class BrainImpl implements BrainIF {
 					System.out.println(e.getCause().getMessage());
 					return sudokuSolution;
 				}else {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Error Ocured", e);
 				}
 			}
-		//TODO 
-		if (InternalHowManyCellsLeft == 0) {
+		// 
+		if (sudokuSolution.getHowManyCellsLeft() == 0) {
 			sudokuSolution.setSolved(true);
-			sudokuHasChanged = false;
+			sudokuSolution.setSudokuHasChanged(false);
 			System.out.println("Sudoku is solved");
 			return sudokuSolution;
 		}
@@ -166,14 +133,14 @@ public class BrainImpl implements BrainIF {
 	}
 
 	public Sudoku loadDemoSudoku(Sudoku demoSudoku) {
-		// TODO set all zeros
+		//  set all zeros
 		for (int row = 0; row < demoSudoku.getRowArray().size(); row++) {
 			for (int column = 0; column < demoSudoku.getRowArray().get(row)
 					.getGroup().size(); column++)
 				demoSudoku.getRowArray().get(row).getGroup().get(column)
 						.setValue(0);
 		}
-		// TODO put known values
+		//  put known values
 		createSudoku createSudoku = new createSudoku();
 		createSudoku.loadSudoku1(demoSudoku);
 
@@ -248,15 +215,14 @@ public class BrainImpl implements BrainIF {
 					try {
 						Guesses = group.getGroup().get(Groupidx).getGuesses();
 					} catch (Exception e) {
-						// TODO: handle exception
+						logger.log(Level.SEVERE, "Error Ocured", e);
 					}
 					if (Guesses != null && Guesses.size() > gssidx
 							&& Guesses.get(gssidx) == foundValues) {
 						group.getGroup().get(Groupidx).getGuesses()
 								.remove(gssidx);
-						if (sudokuHasChanged == false) {
-							sudokuHasChanged = true;
-							System.out.println("sudoku has changed");
+						if (group.getSudoku().isSudokuHasChanged() == false) {
+							group.getSudoku().setSudokuHasChanged(true);
 						}
 						// System.out
 						// .println("the Guess: "
@@ -280,21 +246,13 @@ public class BrainImpl implements BrainIF {
 			int value = cell.getGuesses().get(0);
 			cell.setValue(value);
 			cell.setColor(RED);
-			InternalHowManyCellsLeft = InternalHowManyCellsLeft - 1;
-			if (sudokuHasChanged == false) {
-				sudokuHasChanged = true;
+			if (cell.getRow().getSudoku().isSudokuHasChanged() == false) {
+				cell.getRow().getSudoku().setSudokuHasChanged(true);
 				System.out.println("sudoku has changed value has been found");
 			}
 		}
 	}
 
-	private void countHowManyCellsLeft(Cell cell) throws SecurityException,
-			IllegalArgumentException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
-		if (cell.getValue() == 0)
-			InternalHowManyCellsLeft++;
-
-	}
 
 	private void determineWhoHasUniqueGuessInGroup(Group group)
 			throws SecurityException, IllegalArgumentException,
@@ -352,8 +310,7 @@ public class BrainImpl implements BrainIF {
 						}
 						cell.setValue(number);
 						cell.setColor(BLUE);
-						sudokuHasChanged = true;
-						InternalHowManyCellsLeft = InternalHowManyCellsLeft - 1;
+						group.getSudoku().setSudokuHasChanged(true);
 						break;
 					}
 				}
@@ -380,22 +337,10 @@ public class BrainImpl implements BrainIF {
 			NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		methodRange(sudokuSolution, "determineCellsWhoHas1Guess", ALL);
-		sudokuSolution.setHowManyCellsLeft(InternalHowManyCellsLeft);
-		System.out.println(InternalHowManyCellsLeft
+		System.out.println(sudokuSolution.getHowManyCellsLeft()
 				+ " Cells is waiting to be solved");
 	}
 
-	private void countHowManyCellsLeft(Sudoku sudoku) throws SecurityException,
-			IllegalArgumentException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
-
-		InternalHowManyCellsLeft = 0;
-		methodRange(sudoku, "countHowManyCellsLeft", ALL);
-		sudoku.setHowManyCellsLeft(InternalHowManyCellsLeft);
-		System.out.println(InternalHowManyCellsLeft
-				+ " Cells is waiting to be solved");
-
-	}
 
 	private void determineWhoHasUniqueGuessInGroup(Sudoku sudokuSolution)
 			throws SecurityException, IllegalArgumentException,
@@ -409,65 +354,6 @@ public class BrainImpl implements BrainIF {
 	}
 
 	@Deprecated
-	public Sudoku solveSudokuOld(Sudoku sudoku) {
-		sudokuHasChanged = true;
-		Sudoku sudokuSolution = new Sudoku();
-		sudokuSolution = sudoku.copy();
-		try {
-			evaluateGuesses(sudokuSolution);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// TODO count how many cells left
-
-		try {
-			countHowManyCellsLeft(sudokuSolution);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// TODO Solve the f.cking sudoku
-
-		// TODO Check if the sudoku has changed
-		int trial = 1;
-		while (sudokuHasChanged) {
-			while (sudokuHasChanged) {
-				sudokuHasChanged = false;
-				try {
-					clearGuessesInGroup(sudokuSolution);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				try {
-					determineCellsWhoHas1Guess(sudokuSolution);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (InternalHowManyCellsLeft == 0) {
-					sudokuSolution.setSolved(true);
-					sudokuHasChanged = false;
-					System.out.println("Sudoku is solved");
-					break;
-				}
-				System.out.println("This is the trial number: " + trial);
-				trial++;
-			}
-			if (InternalHowManyCellsLeft != 0)
-				try {
-					determineWhoHasUniqueGuessInGroup(sudokuSolution);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-		if (!sudokuSolution.isSolved()) {
-			try {
-				NotSolvedWriter.log(sudoku, sudokuSolution);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return sudokuSolution;
-	}
 	
 	public boolean isSudokuCorrect(Sudoku sudoku) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
 		setSudokuCorrect(true);

@@ -7,24 +7,33 @@ import main.java.server.parser.Parser;
 
 public class Sudoku implements Cloneable, Comparable<Sudoku> {
 	
-	ArrayList<Row> rowArray= new ArrayList<Row>();
-	ArrayList<Column> columnArray= new ArrayList<Column>();
-	ArrayList<ThreeByThreeSquare> threeByThreeArray= new ArrayList<ThreeByThreeSquare>();
-	boolean solved=false;
-	int HowManyCellsLeft=81;
-	long puzzleId;
-	int puzzleLevel;
+	private ArrayList<Row> rowArray= new ArrayList<Row>();
+	private ArrayList<Column> columnArray= new ArrayList<Column>();
+	private ArrayList<ThreeByThreeSquare> threeByThreeArray= new ArrayList<ThreeByThreeSquare>();
+	private boolean solved=false;
+	private int HowManyCellsLeft=81;
+	private long puzzleId;
+	private int puzzleLevel;
+	private boolean sudokuHasChanged;
 	
 	public Sudoku(){
-		
 			for(int i=0;i<9;i++){
 				rowArray.add( new Row(this,i)); 
 			}	
-		
 			syncColumnsToRow();
 			syncThreeByThreeSquaresToRow();
+			registerAllObservers();
 			System.out.println("created new sudoku");
+	}
 
+
+	private void registerAllObservers() {
+		for (Row row : rowArray) {
+			for (Cell cell : row.getGroup()) {
+				cell.registerObservers();
+			}
+		}
+		
 	}
 
 
@@ -149,7 +158,7 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 					//alt taraf ok
 					Cell cell=rowArray.get(rowIndex).getGroup().get(columnIndex);	
 					threeByThreeArray.get(threeByThreeIndex).getGroup().set(groupCount, cell);
-					cell.setColumn(threeByThreeArray.get(threeByThreeIndex));
+					cell.setThreeByThreeSquare(threeByThreeArray.get(threeByThreeIndex));
 //					Cell leftCell=threeByThreeArray.get(group).getGroup().get(groupCount);
 					
 //					System.out.println("For threebythree "+leftCell.equals(rightCell)+" , "+leftCell.toString()+" , "+rightCell.toString());
@@ -173,6 +182,22 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 		return group;
 	}
 	
+	/**
+	 * @return the sudokuHasChanged
+	 */
+	public boolean isSudokuHasChanged() {
+		return sudokuHasChanged;
+	}
+
+
+	/**
+	 * @param sudokuHasChanged the sudokuHasChanged to set
+	 */
+	public void setSudokuHasChanged(boolean sudokuHasChanged) {
+		this.sudokuHasChanged = sudokuHasChanged;
+	}
+
+
 	public Sudoku copy(){
 		Sudoku sudoku=new Sudoku();
 		for (int i =0; i<9; i++ ) {
@@ -182,19 +207,6 @@ public class Sudoku implements Cloneable, Comparable<Sudoku> {
 				cell.setValue(this.getRowArray().get(i).getGroup().get(j).getValue());
 			}
 		}
-/*		try {
-			sudoku=(Sudoku) this.clone();
-			
-			
-			
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		/*sudoku.setCollumnArray((ArrayList<Collumn>)getCollumnArray().clone());
-		sudoku.setRowArray((ArrayList<Row>)getRowArray().clone());
-		sudoku.setThreeByThreeArray((ArrayList<ThreeByThreeSquare>)getThreeByThreeArray().clone());*/
-		
 		return sudoku;
 	}
 	
